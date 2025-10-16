@@ -1,1 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Font Preview Tool</title>
+
+  <style>
+    /* === SAMPLE FONT DEFINITIONS === */
+    /* Replace the URLs with your actual Google Drive font links */
+    @font-face {
+      font-family: 'Academy Engraved LET';
+      src: url('https://beaconcarve-svg.github.io/Font-Preview/Academy Engraved LET Fonts.ttf
+
+') format('truetype');
+ @font-face {
+      font-family: 'AlegreyaSC';
+      src: url('https://beaconcarve-svg.github.io/Font-Preview/AlegreyaSC-Medium.ttf
+
+') format('truetype');
+    } 
+@font-face {
+      font-family: 'Academy Engraved LET Fonts';
+      src: url('https://beaconcarve-svg.github.io/Font-Preview/Academy Engraved LET Fonts.ttf
+
+') format('truetype');
+    }
+    /* === STYLING === */
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #ffffff;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+    }
+
+    button {
+      font-size: 16px;
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      cursor: pointer;
+      color: #ffffff;
+      border-radius: 6px;
+      background-color: #30625C;
+    }
+
+    input, select {
+      font-size: 18px;
+      padding: 10px;
+      margin: 20px auto;
+      display: block;
+      width: 80%;
+      border: 1px solid #314946;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    #dropdownBtn {
+      width: 100%;
+      padding: 12px;
+      background: #ffffff;
+      border: 1px solid #314946;
+      text-align: left;
+      cursor: pointer;
+      color: #000000;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background: #ffffff;
+      border: 1px solid #30625C;
+      width: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 10;
+      color: #000000;
+    }
+
+    .dropdown-content div {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .dropdown-content div:hover {
+      background: #eee;
+    }
+
+    .preview {
+      font-size: 32px;
+      margin: 15px 0;
+    }
+
+    .font-block {
+      margin: 20px 0;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    #fontName {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    #monogramSection {
+      margin-top: 30px;
+    }
+
+    .single-input-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin: 20px auto;
+      flex-wrap: wrap;
+    }
+
+    .single-input-row .dropdown {
+      width: 45%;
+    }
+
+    .filter-label {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- Mode Toggle -->
+  <div class="mode-toggle">
+    <button onclick="setMode('all')">See All Fonts</button>
+    <button onclick="setMode('single')">See One Font</button>
+    <button onclick="showMonogramFonts()">Show Monogram Fonts</button>
+  </div>
+
+  <!-- Filter Fonts -->
+  <div class="filter-toggle" id="filterFontsToggle">
+    <label for="filterSelect">Filter Fonts:</label>
+    <select id="filterSelect" onchange="filterFonts()">
+      <option value="all">All</option>
+      <option value="handwritten">Handwritten</option>
+      <option value="serif">Serif</option>
+      <option value="modern">Modern</option>
+    </select>
+  </div>
+
+  <!-- Shared Input Field -->
+  <input type="text" id="userText" placeholder="Type your text here">
+
+  <!-- All Fonts Mode -->
+  <div id="allMode">
+    <div id="allFontsPreview"></div>
+  </div>
+
+  <!-- Single Font Mode -->
+  <div id="singleMode" style="display:none;">
+    <div class="single-input-row">
+      <div class="dropdown" id="fontDropdown">
+        <button id="dropdownBtn">Select a Font ▼</button>
+        <div id="dropdownList" class="dropdown-content"></div>
+      </div>
+    </div>
+    <div id="preview" class="preview">Your preview will appear here</div>
+    <div id="fontName"></div>
+  </div>
+
+  <!-- Monogram Fonts Section -->
+  <div id="monogramSection" style="display:none;">
+    <h3>Monogram Fonts</h3>
+
+    <label class="filter-label" for="monogramFilter">Filter Monograms:</label>
+    <input type="text" id="monogramFilter" placeholder="e.g. Mermaid, Circle, Vine">
+
+    <div id="monogramFontsPreview"></div>
+  </div>
+
+</div>
+
+<script>
+  const fonts = [
+    { name: "Autumn in November", class: "Autumn", category: "handwritten" },
+    { name: "Alegreya SC", class: "AlegreyaSC", category: "serif" },
+    { name: "Samantha", class: "Samantha", category: "handwritten" },
+    { name: "Atma", class: "Atma", category: "modern" },
+    { name: "Copperplate", class: "Copperplate", category: "serif" },
+    { name: "Jersey", class: "Jersey", category: "modern" },
+    { name: "Circle Monogram", class: "CircleMono", category: "monogram" },
+    { name: "Vine Monogram", class: "VineMono", category: "monogram" },
+    { name: "Mermaid Monogram", class: "MermaidMono", category: "monogram" }
+  ];
+
+  let mode = "all";
+  let selectedFont = null;
+
+  function setMode(m) {
+    mode = m;
+
+    // Reset display sections
+    document.getElementById("allMode").style.display = (m === "all") ? "block" : "none";
+    document.getElementById("singleMode").style.display = (m === "single") ? "block" : "none";
+    document.getElementById("monogramSection").style.display = "none";
+
+    // Show filter and dropdown controls again when leaving monogram mode
+    document.getElementById("filterFontsToggle").style.display = "block";
+    document.getElementById("fontDropdown").style.display = (m === "single") ? "block" : "none";
+
+    updatePreviews();
+  }
+
+  function filterFonts() {
+    updatePreviews();
+  }
+
+  function updatePreviews() {
+    const text = document.getElementById("userText").value || "Your preview text";
+    const filter = document.getElementById("filterSelect").value;
+
+    if (mode === "all") {
+      const container = document.getElementById("allFontsPreview");
+      container.innerHTML = "";
+      fonts.forEach(f => {
+        if (filter !== "all" && f.category !== filter) return;
+        const block = document.createElement("div");
+        block.classList.add("font-block");
+        block.innerHTML = `<div style="font-family:${f.class}; font-size:20px;">${f.name}</div>
+                           <div style="font-family:${f.class}; font-size:32px;">${text}</div>`;
+        container.appendChild(block);
+      });
+    }
+
+    if (mode === "single" && selectedFont) {
+      document.getElementById("preview").style.fontFamily = selectedFont.class;
+      document.getElementById("preview").innerText = text;
+      document.getElementById("fontName").innerText = selectedFont.name;
+    }
+  }
+
+  function showMonogramFonts() {
+    mode = "monogram";
+
+    // Hide all other sections
+    document.getElementById("allMode").style.display = "none";
+    document.getElementById("singleMode").style.display = "none";
+    document.getElementById("monogramSection").style.display = "block";
+
+    // Hide filter and dropdown when viewing monograms
+    document.getElementById("filterFontsToggle").style.display = "none";
+    document.getElementById("fontDropdown").style.display = "none";
+
+    document.getElementById("monogramFilter").value = "";
+    filterMonogramFonts();
+  }
+
+  function filterMonogramFonts() {
+    const container = document.getElementById("monogramFontsPreview");
+    const text = document.getElementById("userText").value || "ABC";
+    const keyword = document.getElementById("monogramFilter").value.toLowerCase();
+
+    container.innerHTML = "";
+    fonts.forEach(f => {
+      if (f.category === "monogram" && f.name.toLowerCase().includes(keyword)) {
+        const block = document.createElement("div");
+        block.classList.add("font-block");
+        block.innerHTML = `<div style="font-family:${f.class}; font-size:20px;">${f.name}</div>
+                           <div style="font-family:${f.class}; font-size:32px;">${text}</div>`;
+        container.appendChild(block);
+      }
+    });
+  }
+
+  // Build dropdown list
+  const dropdownBtn = document.getElementById("dropdownBtn");
+  const dropdownList = document.getElementById("dropdownList");
+
+  function populateDropdown() {
+    dropdownList.innerHTML = "";
+    fonts.forEach(f => {
+      if (f.category === "monogram") return;
+      const item = document.createElement("div");
+      item.style.fontFamily = f.class;
+      item.innerText = f.name;
+      item.addEventListener("click", () => {
+        selectedFont = f;
+        dropdownBtn.innerText = f.name + " ▼";
+        dropdownList.style.display = "none";
+        updatePreviews();
+      });
+      dropdownList.appendChild(item);
+    });
+  }
+
+  populateDropdown();
+
+  dropdownBtn.addEventListener("click", () => {
+    dropdownList.style.display = dropdownList.style.display === "block" ? "none" : "block";
+  });
+
+  document.getElementById("userText").addEventListener("input", () => {
+    updatePreviews();
+    if (mode === "monogram") filterMonogramFonts();
+  });
+
+  document.getElementById("monogramFilter").addEventListener("input", filterMonogramFonts);
+</script>
+
+</body>
+</html>
+
+
 
