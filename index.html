@@ -5,30 +5,54 @@
   <title>Font Preview Tool</title>
 
   <style>
-    /* === SAMPLE FONT DEFINITIONS === */
-    /* Replace the URLs with your actual Google Drive font links */
+    /* === FONT IMPORTS === */
+    /* Replace the URLs below with your actual Google Drive direct links 
+       (https://drive.google.com/uc?export=download&id=YOUR_FILE_ID) 
+       OR use relative links like fonts/Autumn.ttf if hosted on GitHub. */
     @font-face {
-      font-family: 'Academy Engraved LET';
-      src: url('https://beaconcarve-svg.github.io/Font-Preview/Academy Engraved LET Fonts.ttf
-
-') format('truetype');
- @font-face {
-      font-family: 'AlegreyaSC';
-      src: url('https://beaconcarve-svg.github.io/Font-Preview/AlegreyaSC-Medium.ttf
-
-') format('truetype');
-    } 
-@font-face {
-      font-family: 'Academy Engraved LET Fonts';
-      src: url('https://beaconcarve-svg.github.io/Font-Preview/Academy Engraved LET Fonts.ttf
-
-') format('truetype');
+      font-family: 'Autumn';
+      src: url('https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_HERE') format('truetype');
     }
-    /* === STYLING === */
+    @font-face {
+      font-family: 'AlegreyaSC';
+      src: url('https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_HERE') format('truetype');
+    }
+    @font-face {
+      font-family: 'Samantha';
+      src: url('https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_HERE') format('opentype');
+    }
+    @font-face {
+      font-family: 'Atma';
+      src: url('https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_HERE') format('truetype');
+    }
+    @font-face {
+      font-family: 'Copperplate';
+      src: url('https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_HERE') format('truetype');
+    }
+    @font-face {
+      font-family: 'Jersey';
+      src: url('https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_HERE') format('truetype');
+    }
+    @font-face {
+      font-family: 'CircleMono';
+      src: url('https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_HERE') format('truetype');
+    }
+    @font-face {
+      font-family: 'VineMono';
+      src: url('https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_HERE') format('truetype');
+    }
+    @font-face {
+      font-family: 'MermaidMono';
+      src: url('https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_HERE') format('truetype');
+    }
+
+    /* === STYLE (unchanged from your original) === */
     body {
       font-family: sans-serif;
       text-align: center;
       background: #ffffff;
+      margin: 0;
+      padding: 0;
     }
 
     .container {
@@ -45,6 +69,11 @@
       color: #ffffff;
       border-radius: 6px;
       background-color: #30625C;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background-color: #264b46;
     }
 
     input, select {
@@ -191,6 +220,7 @@
 </div>
 
 <script>
+  /* === FONT DATA === */
   const fonts = [
     { name: "Autumn in November", class: "Autumn", category: "handwritten" },
     { name: "Alegreya SC", class: "AlegreyaSC", category: "serif" },
@@ -209,12 +239,10 @@
   function setMode(m) {
     mode = m;
 
-    // Reset display sections
     document.getElementById("allMode").style.display = (m === "all") ? "block" : "none";
     document.getElementById("singleMode").style.display = (m === "single") ? "block" : "none";
     document.getElementById("monogramSection").style.display = "none";
 
-    // Show filter and dropdown controls again when leaving monogram mode
     document.getElementById("filterFontsToggle").style.display = "block";
     document.getElementById("fontDropdown").style.display = (m === "single") ? "block" : "none";
 
@@ -252,12 +280,10 @@
   function showMonogramFonts() {
     mode = "monogram";
 
-    // Hide all other sections
     document.getElementById("allMode").style.display = "none";
     document.getElementById("singleMode").style.display = "none";
     document.getElementById("monogramSection").style.display = "block";
 
-    // Hide filter and dropdown when viewing monograms
     document.getElementById("filterFontsToggle").style.display = "none";
     document.getElementById("fontDropdown").style.display = "none";
 
@@ -282,7 +308,7 @@
     });
   }
 
-  // Build dropdown list
+  /* === DROPDOWN === */
   const dropdownBtn = document.getElementById("dropdownBtn");
   const dropdownList = document.getElementById("dropdownList");
 
@@ -319,6 +345,7 @@
 
 </body>
 </html>
+
 
 
 
