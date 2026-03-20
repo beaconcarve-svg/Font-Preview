@@ -329,6 +329,13 @@
 <div class="container">
 
   <input type="text" id="userText" placeholder="Type your text here">
+  <div class="toggle-wrap">
+  <label class="toggle">
+    <input type="checkbox" id="showFavoritesOnly">
+    <span class="slider"></span>
+  </label>
+  <span class="toggle-label">Show Favorites</span>
+</div>
 
   <!-- Controls -->
   <input type="text" id="searchFont" placeholder="Search fonts...">
@@ -391,6 +398,20 @@ function toggleFavorite(name) {
 
 function copyFont(name) {
   navigator.clipboard.writeText(name);
+
+  // Put font name into input
+  document.getElementById("userText").value = name;
+
+  // Refresh preview
+  updatePreviews();
+
+  // Show popup
+  const popup = document.getElementById("copyPopup");
+  popup.classList.add("show");
+
+  setTimeout(() => {
+    popup.classList.remove("show");
+  }, 1200);
 }
 
 function updatePreviews() {
@@ -459,4 +480,5 @@ document.getElementById("showFavoritesOnly").addEventListener("change", updatePr
 updatePreviews();
 </script>
 
+<div id="copyPopup" class="copy-popup">Copied!</div>
 </body>
