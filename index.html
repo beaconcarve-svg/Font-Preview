@@ -251,182 +251,139 @@
     }
   </style>
 </head>
-
 <body>
 
 <div class="container">
 
-  <!-- Mode Toggle -->
-  <div class="mode-toggle">
-    <button onclick="setMode('all')">See All Fonts</button>
-    <button onclick="setMode('single')">See One Font</button>
-  </div>
-
-  <!-- Filter Fonts -->
-  <div class="filter-toggle" id="filterFontsToggle">
-    <label for="filterSelect">Filter Fonts:</label>
-    <select id="filterSelect" onchange="filterFonts()">
-      <option value="all">All</option>
-      <option value="handwritten">Handwritten</option>
-      <option value="serif">Serif</option>
-      <option value="modern">Modern</option>
-    </select>
-  </div>
-
-  <!-- Shared Input Field -->
   <input type="text" id="userText" placeholder="Type your text here">
 
-  <!-- All Fonts Mode -->
-  <div id="allMode">
-    <div id="allFontsPreview"></div>
-  </div>
+  <!-- Controls -->
+  <input type="text" id="searchFont" placeholder="Search fonts...">
 
-  <!-- Single Font Mode -->
-  <div id="singleMode" style="display:none;">
-    <div class="single-input-row">
-      <div class="dropdown" id="fontDropdown">
-        <input type="text" id="searchFont" placeholder="Type or select a font...">
-        <button id="dropdownBtn">Select a Font ▼</button>
-        <div id="dropdownList" class="dropdown-content"></div>
-      </div>
-    </div>
-    <div id="preview" class="preview">Your preview will appear here</div>
-    <div id="fontName"></div>
-  </div>
+  <label style="display:block; margin:10px;">
+    <input type="checkbox" id="showFavoritesOnly">
+    Show only favorites
+  </label>
+
+  <div id="allFontsPreview"></div>
 
 </div>
 
 <script>
-  /* === FONT DATA & APP LOGIC === */
-  const fonts = [
-    { name: "Academy Engraved", class: "AcademyEngraved", category: "handwritten" },
-    { name: "Alegreya SC", class: "AlegreyaSC", category: "serif" },
-    { name: "Atma", class: "Atma", category: "modern" },
-    { name: "Autumn in November", class: "AutumninNovember", category: "handwritten" },
-    { name: "Bodoni SC", class: "Bodoni72SC", category: "serif" },
-    { name: "Butterfly", class: "Butterfly", category: "serif" },
-    { name: "ButterflyKids", class: "ButterflyKids", category: "serif" },
-    { name: "Cream Cheese", class: "CreamCheese", category: "serif" },
-    { name: "Dancing Script", class: "DancingScript", category: "serif" },
-    { name: "Daughter Sunflower", class: "Daughter Sunflower", category: "serif" },
-    { name: "Electrolize", class: "Electrolize", category: "serif" },
-    { name: "Elizabeth", class: "Elizabeth", category: "serif" },
-    { name: "Geneva", class: "Geneva", category: "serif" },
-    { name: "Gorditas", class: "Gorditas", category: "serif" },
-    { name: "Grandma", class: "Grandma", category: "serif" },
-    { name: "Grinched", class: "Grinched", category: "serif" },
-    { name: "Handmade", class: "Handmade", category: "serif" },
-    { name: "Imperial Script", class: "ImperialScript", category: "serif" },
-    { name: "Jersey", class: "Jersey", category: "serif" },
-    { name: "CandyTree", class: "JTCandyTree", category: "serif" },
-    { name: "LibreBaskerville", class: "LibreBaskerville", category: "serif" },
-    { name: "LifeSavers", class: "LifeSavers", category: "serif" },
-    { name: "Lucky", class: "Lucky", category: "serif" },
-    { name: "Magnolina", class: "Magnolina", category: "serif" },
-    { name: "Minimalist Farmhouse", class: "MinimalistFarmhouse", category: "serif" },
-    { name: "NewYork", class: "NewYork", category: "serif" },
-    { name: "Samantha Calligraphy", class: "SamanthaCalligraphy", category: "serif" },
-    { name: "Samantha Signature", class: "SamanthaSignature", category: "serif" },
-    { name: "Samantha", class: "Samantha", category: "handwritten" },
-    { name: "SFCompactRounded", class: "SFCompactRounded", category: "serif" },
-    { name: "Stencil Army", class: "Stencil Army", category: "modern" },
-    { name: "Copperplate", class: "Copperplate", category: "serif" },
-  ];
+const fonts = [
+  { name: "Academy Engraved", class: "AcademyEngraved" },
+  { name: "Alegreya SC", class: "AlegreyaSC" },
+  { name: "Atma", class: "Atma" },
+  { name: "Autumn in November", class: "AutumninNovember" },
+  { name: "Bodoni SC", class: "Bodoni72SC" },
+  { name: "Butterfly", class: "Butterfly" },
+  { name: "ButterflyKids", class: "ButterflyKids" },
+  { name: "Cream Cheese", class: "CreamCheese" },
+  { name: "Dancing Script", class: "DancingScript" },
+  { name: "Daughter Sunflower", class: "Daughter Sunflower" },
+  { name: "Electrolize", class: "Electrolize" },
+  { name: "Elizabeth", class: "Elizabeth" },
+  { name: "Geneva", class: "Geneva" },
+  { name: "Gorditas", class: "Gorditas" },
+  { name: "Grandma", class: "Grandma" },
+  { name: "Grinched", class: "Grinched" },
+  { name: "Handmade", class: "Handmade" },
+  { name: "Imperial Script", class: "ImperialScript" },
+  { name: "Jersey", class: "Jersey" },
+  { name: "CandyTree", class: "JTCandyTree" },
+  { name: "LibreBaskerville", class: "LibreBaskerville" },
+  { name: "LifeSavers", class: "LifeSavers" },
+  { name: "Lucky", class: "Lucky" },
+  { name: "Magnolina", class: "Magnolina" },
+  { name: "Minimalist Farmhouse", class: "MinimalistFarmhouse" },
+  { name: "NewYork", class: "NewYork" },
+  { name: "Samantha Calligraphy", class: "SamanthaCalligraphy" },
+  { name: "Samantha Signature", class: "SamanthaSignature" },
+  { name: "Samantha", class: "Samantha" },
+  { name: "SFCompactRounded", class: "SFCompactRounded" },
+  { name: "Stencil Army", class: "Stencil Army" }
+];
 
-  let mode = "all";
-  let selectedFont = null;
+let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 
-  // All DOM-dependent logic runs after DOMContentLoaded so getElementById works reliably
-  document.addEventListener("DOMContentLoaded", () => {
-    const dropdownBtn = document.getElementById("dropdownBtn");
-    const dropdownList = document.getElementById("dropdownList");
-    const searchFont = document.getElementById("searchFont");
+function toggleFavorite(name) {
+  if (favorites.includes(name)) {
+    favorites = favorites.filter(f => f !== name);
+  } else {
+    favorites.push(name);
+  }
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+  updatePreviews();
+}
 
-    function setMode(m) {
-      mode = m;
-      document.getElementById("allMode").style.display = (m === "all") ? "block" : "none";
-      document.getElementById("singleMode").style.display = (m === "single") ? "block" : "none";
-      document.getElementById("filterFontsToggle").style.display = (m === "single") ? "none" : "block";
-      updatePreviews();
-    }
-    // Make setMode global for button onclick handlers
-    window.setMode = setMode;
+function copyFont(name) {
+  navigator.clipboard.writeText(name);
+}
 
-    function filterFonts() {
-      updatePreviews();
-    }
-    window.filterFonts = filterFonts;
+function updatePreviews() {
+  const text = document.getElementById("userText").value || "Your preview text";
+  const search = document.getElementById("searchFont").value.toLowerCase();
+  const showOnlyFavs = document.getElementById("showFavoritesOnly").checked;
 
-    function updatePreviews() {
-      const text = document.getElementById("userText").value || "Your preview text";
-      const filter = document.getElementById("filterSelect").value;
+  const container = document.getElementById("allFontsPreview");
+  container.innerHTML = "";
 
-      if (mode === "all") {
-        const container = document.getElementById("allFontsPreview");
-        container.innerHTML = "";
-        fonts.forEach(f => {
-          if (filter !== "all" && f.category !== filter) return;
-          const block = document.createElement("div");
-          block.classList.add("font-block");
-          // quote the font family name to handle font-names with spaces
-          block.innerHTML = `<div style="font-family:'${f.class}'; font-size:20px;">${f.name}</div>
-                             <div style="font-family:'${f.class}'; font-size:32px;">${text}</div>`;
-          container.appendChild(block);
-        });
-      }
+  let filteredFonts = [...fonts];
 
-      if (mode === "single" && selectedFont) {
-        const previewEl = document.getElementById("preview");
-        // assign quoted family for safety
-        previewEl.style.fontFamily = "'" + selectedFont.class + "'";
-        previewEl.innerText = text;
-        document.getElementById("fontName").innerText = selectedFont.name;
-      }
-    }
+  // Search filter
+  if (search) {
+    filteredFonts = filteredFonts.filter(f =>
+      f.name.toLowerCase().includes(search)
+    );
+  }
 
-    function populateDropdown(filterText = "") {
-      dropdownList.innerHTML = "";
-      fonts.forEach(f => {
-        if (!f.name.toLowerCase().includes(filterText.toLowerCase())) return;
-        const item = document.createElement("div");
-        // when assigning via style, quoting is not necessary, but it's harmless to set it as a single string
-        item.style.fontFamily = "'" + f.class + "'";
-        item.innerText = f.name;
-        item.addEventListener("click", () => {
-          selectedFont = f;
-          dropdownBtn.innerText = f.name + " ▼";
-          dropdownList.style.display = "none";
-          searchFont.value = "";
-          updatePreviews();
-        });
-        dropdownList.appendChild(item);
-      });
-    }
+  // Favorites filter
+  if (showOnlyFavs) {
+    filteredFonts = filteredFonts.filter(f =>
+      favorites.includes(f.name)
+    );
+  }
 
-    dropdownBtn.addEventListener("click", () => {
-      dropdownList.style.display = dropdownList.style.display === "block" ? "none" : "block";
-    });
-
-    searchFont.addEventListener("input", e => {
-      dropdownList.style.display = "block";
-      populateDropdown(e.target.value);
-    });
-
-    document.addEventListener("click", e => {
-      if (!e.target.closest(".dropdown")) {
-        dropdownList.style.display = "none";
-      }
-    });
-
-    // Live updating
-    document.getElementById("userText").addEventListener("input", updatePreviews);
-    document.getElementById("filterSelect").addEventListener("change", updatePreviews);
-
-    // Initialize
-    populateDropdown();
-    updatePreviews();
+  // Sort favorites first
+  filteredFonts.sort((a, b) => {
+    return favorites.includes(b.name) - favorites.includes(a.name);
   });
+
+  filteredFonts.forEach(f => {
+    const isFav = favorites.includes(f.name);
+
+    const block = document.createElement("div");
+    block.classList.add("font-block");
+
+    block.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-family:'${f.class}'; font-size:20px;">
+          ${f.name}
+        </div>
+        <div>
+          <button onclick="copyFont('${f.name}')">Copy</button>
+          <button onclick="toggleFavorite('${f.name}')">
+            ${isFav ? "⭐" : "☆"}
+          </button>
+        </div>
+      </div>
+
+      <div style="font-family:'${f.class}'; font-size:32px;">
+        ${text}
+      </div>
+    `;
+
+    container.appendChild(block);
+  });
+}
+
+// Event listeners
+document.getElementById("userText").addEventListener("input", updatePreviews);
+document.getElementById("searchFont").addEventListener("input", updatePreviews);
+document.getElementById("showFavoritesOnly").addEventListener("change", updatePreviews);
+
+// Init
+updatePreviews();
 </script>
 
 </body>
-</html>
