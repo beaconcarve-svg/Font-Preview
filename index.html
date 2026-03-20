@@ -203,7 +203,9 @@
       padding: 10px;
       cursor: pointer;
     }
-
+    button {
+  transition: 0.2s ease;
+}
     .dropdown-content div:hover {
       background: #eee;
     }
@@ -304,30 +306,34 @@
   font-weight: bold;
 }
 
-/* Copy popup */
-.copy-popup {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #30625C;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 6px;
-  opacity: 0;
-  transition: 0.3s;
-  pointer-events: none;
+
+    .instructions {
+  margin-bottom: 20px;
 }
 
-.copy-popup.show {
-  opacity: 1;
+.instructions h2 {
+  margin-bottom: 8px;
+  font-size: 26px;
+  color: #30625C;
+}
+
+.instructions p {
+  font-size: 16px;
+  color: #444;
+  line-height: 1.5;
 }
   </style>
 </head>
 <body>
 
-<div class="container">
-
+<div class="instructions">
+  <h2>Choose Your Font</h2>
+  <p>
+    Type your text below to preview it in different fonts.<br>
+    Click ⭐ to save favorites, and press <b>Copy</b> to use the font name in your order.
+  </p>
+</div>
+  
   <input type="text" id="userText" placeholder="Type your text here">
 
   <input type="text" id="searchFont" placeholder="Search fonts...">
@@ -345,7 +351,6 @@
 
 </div>
 
-<div id="copyPopup" class="copy-popup">Copied!</div>
 
 <script>
 const fonts = [
@@ -394,20 +399,19 @@ function toggleFavorite(name) {
   updatePreviews();
 }
 
-function copyFont(name) {
+function copyFont(name, btn) {
   navigator.clipboard.writeText(name);
 
-  // Fill input
-  document.getElementById("userText").value = name;
+  // Change button text
+  const originalText = btn.innerText;
+  btn.innerText = "Copied ✓";
+  btn.style.backgroundColor = "#4CAF50";
 
-  // Update preview
-  updatePreviews();
-
-  // Popup
-  const popup = document.getElementById("copyPopup");
-  popup.classList.add("show");
-
-  setTimeout(() => popup.classList.remove("show"), 1200);
+  // Reset after delay
+  setTimeout(() => {
+    btn.innerText = originalText;
+    btn.style.backgroundColor = "#30625C";
+  }, 1200);
 }
 
 function updatePreviews() {
@@ -448,8 +452,7 @@ function updatePreviews() {
           ${f.name}
         </div>
         <div>
-          <button onclick="copyFont('${f.name}')">Copy</button>
-          <button onclick="toggleFavorite('${f.name}')">
+<button onclick="copyFont('${f.name}', this)">Copy</button>
             ${isFav ? "⭐" : "☆"}
           </button>
         </div>
