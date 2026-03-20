@@ -329,25 +329,23 @@
 <div class="container">
 
   <input type="text" id="userText" placeholder="Type your text here">
-  <div class="toggle-wrap">
-  <label class="toggle">
-    <input type="checkbox" id="showFavoritesOnly">
-    <span class="slider"></span>
-  </label>
-  <span class="toggle-label">Show Favorites</span>
-</div>
 
-  <!-- Controls -->
   <input type="text" id="searchFont" placeholder="Search fonts...">
 
-  <label style="display:block; margin:10px;">
-    <input type="checkbox" id="showFavoritesOnly">
-    Show only favorites
-  </label>
+  <!-- Clean Toggle -->
+  <div class="toggle-wrap">
+    <label class="toggle">
+      <input type="checkbox" id="showFavoritesOnly">
+      <span class="slider"></span>
+    </label>
+    <span class="toggle-label">Show Favorites</span>
+  </div>
 
   <div id="allFontsPreview"></div>
 
 </div>
+
+<div id="copyPopup" class="copy-popup">Copied!</div>
 
 <script>
 const fonts = [
@@ -399,19 +397,17 @@ function toggleFavorite(name) {
 function copyFont(name) {
   navigator.clipboard.writeText(name);
 
-  // Put font name into input
+  // Fill input
   document.getElementById("userText").value = name;
 
-  // Refresh preview
+  // Update preview
   updatePreviews();
 
-  // Show popup
+  // Popup
   const popup = document.getElementById("copyPopup");
   popup.classList.add("show");
 
-  setTimeout(() => {
-    popup.classList.remove("show");
-  }, 1200);
+  setTimeout(() => popup.classList.remove("show"), 1200);
 }
 
 function updatePreviews() {
@@ -424,24 +420,21 @@ function updatePreviews() {
 
   let filteredFonts = [...fonts];
 
-  // Search filter
   if (search) {
     filteredFonts = filteredFonts.filter(f =>
       f.name.toLowerCase().includes(search)
     );
   }
 
-  // Favorites filter
   if (showOnlyFavs) {
     filteredFonts = filteredFonts.filter(f =>
       favorites.includes(f.name)
     );
   }
 
-  // Sort favorites first
-  filteredFonts.sort((a, b) => {
-    return favorites.includes(b.name) - favorites.includes(a.name);
-  });
+  filteredFonts.sort((a, b) =>
+    favorites.includes(b.name) - favorites.includes(a.name)
+  );
 
   filteredFonts.forEach(f => {
     const isFav = favorites.includes(f.name);
@@ -471,7 +464,7 @@ function updatePreviews() {
   });
 }
 
-// Event listeners
+// Events
 document.getElementById("userText").addEventListener("input", updatePreviews);
 document.getElementById("searchFont").addEventListener("input", updatePreviews);
 document.getElementById("showFavoritesOnly").addEventListener("change", updatePreviews);
@@ -480,5 +473,4 @@ document.getElementById("showFavoritesOnly").addEventListener("change", updatePr
 updatePreviews();
 </script>
 
-<div id="copyPopup" class="copy-popup">Copied!</div>
 </body>
