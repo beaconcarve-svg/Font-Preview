@@ -249,6 +249,79 @@
       border: 1px solid #314946;
       border-radius: 6px;
     }
+
+    /* Toggle Switch */
+.toggle-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.toggle {
+  position: relative;
+  width: 50px;
+  height: 26px;
+}
+
+.toggle input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: 26px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.3s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.toggle input:checked + .slider {
+  background-color: #30625C;
+}
+
+.toggle input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+.toggle-label {
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+/* Copy popup */
+.copy-popup {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #30625C;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: 0.3s;
+  pointer-events: none;
+}
+
+.copy-popup.show {
+  opacity: 1;
+}
   </style>
 </head>
 <body>
